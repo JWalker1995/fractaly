@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Fractaly</string>
+    <string name="poll_service_desc">Regularly polls the processing server. Updates the phone background when processing is complete.</string>
+</resources>
