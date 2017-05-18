@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "net.walker9.fractaly"
-        minSdkVersion 15
+        minSdkVersion 22
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"

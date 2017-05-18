@@ -11,6 +11,6 @@ import android.content.DialogInterface;
 
 public class ErrorManager {
     public void error(Exception e) {
-
+        e.printStackTrace();
     }
 }

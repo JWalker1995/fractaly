@@ -35,22 +35,4 @@ public class PersistentData {
         editor.putStringSet("active_images", set);
         editor.commit();
     }
-
-    public long get_next_request_timestamp() {
-        return prefs.getLong("next_request_timestamp", 0);
-    }
-    public void set_next_request_timestamp(long timestamp) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong("next_request_timestamp", timestamp);
-        editor.commit();
-    }
-
-    public String get_poll_key() {
-        return prefs.getString("poll_key", null);
-    }
-    public void set_poll_key(String poll_key) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("poll_key", poll_key);
-        editor.commit();
-    }
 }
