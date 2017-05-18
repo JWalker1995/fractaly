@@ -53,6 +53,15 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/clear_log" />
+
+    <Button
+        android:id="@+id/clear_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/update_now"
-        android:text="Log" />
+        android:text="Clear Log" />
+
 </RelativeLayout>

@@ -21,10 +21,10 @@ import java.io.IOException;
  */
 
 public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
-    private JobService job_service;
+    private RenderService service;
 
-    public RenderTask(JobService job_service) {
-        this.job_service = job_service;
+    public RenderTask(RenderService service) {
+        this.service = service;
     }
 
 
@@ -37,12 +37,12 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
 
     @Override
     protected void onPostExecute(JobParameters params) {
-        job_service.jobFinished(params, false);
+        service.call_finish(params, false);
     }
 
     @Override
     protected void onCancelled(JobParameters params) {
-        job_service.jobFinished(params, true);
+        service.call_finish(params, true);
     }
 
     public boolean stopJob(JobParameters params) {
@@ -51,7 +51,13 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
 
 
     private void push_render(JobParameters params) {
-        File file = new File(job_service.getFilesDir(), "render_" + params.getJobId() + ".png");
+        File file = new File(service.getFilesDir(), "render_" + params.getJobId() + ".png");
+
+        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
+        Bitmap bmp = render(dm.widthPixels, dm.heightPixels);
+        if (bmp == null) {
+            return;
+        }
 
         FileOutputStream out;
         try {
@@ -60,13 +66,6 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
             MainActivity.get_error_manager().error(e);
             return;
         }
-
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        Bitmap bmp = render(dm.widthPixels, dm.heightPixels);
-        if (bmp == null) {
-            return;
-        }
-
         bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
 
         try {

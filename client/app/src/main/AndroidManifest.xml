@@ -3,7 +3,9 @@
     package="net.walker9.fractaly">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
     <uses-sdk android:minSdkVersion="22" />
 
@@ -23,7 +25,7 @@
 
         <activity
             android:configChanges="orientation|screenSize"
-            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" />
+            android:name=".ImageSelector" />
 
         <receiver android:name=".UpdateServiceScheduler">
             <intent-filter>

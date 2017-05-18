@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.PersistableBundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by joel on 5/16/17.
  */
@@ -16,32 +18,68 @@ import android.util.Log;
 public class RenderService extends JobService {
 
     static void request(Context context, int id) {
+        if (id < render_tasks.size() && render_tasks.get(id) != null) {
+            return;
+        }
+
         ComponentName serviceName = new ComponentName(context, RenderService.class);
 
         JobInfo jobInfo = new JobInfo.Builder(id, serviceName)
                 .setPersisted(true)
                 .setRequiresCharging(true)
-                .setRequiresDeviceIdle(true)
                 .build();
 
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         int result = scheduler.schedule(jobInfo);
-        if (result != JobScheduler.RESULT_SUCCESS) {
-            MainActivity.get_error_manager().error(new Exception("Job failed to schedule"));
+        if (result == JobScheduler.RESULT_SUCCESS) {
+            MainActivity.get_error_manager().error(new Exception("Scheduled job " + id));
+        } else {
+            MainActivity.get_error_manager().error(new Exception("Failed to schedule job " + id));
         }
     }
 
-    private RenderTask render_task = new RenderTask(this);
+    RenderService() {
+        MainActivity.get_error_manager().error(new Exception("RenderService"));
+    }
+
+    private static ArrayList<RenderTask> render_tasks = new ArrayList<RenderTask>();
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        render_task.execute(params);
+        while (render_tasks.size() <= params.getJobId()) {
+            render_tasks.add(null);
+        }
+        if (render_tasks.get(params.getJobId()) != null) {
+            MainActivity.get_error_manager().error(new Exception("Trying to restart job " + params.getJobId()));
+            return false;
+        }
+
+        MainActivity.get_error_manager().error(new Exception("Starting job " + params.getJobId() + "..."));
+
+        RenderTask task = new RenderTask(this);
+        render_tasks.set(params.getJobId(), task);
+
+        task.execute(params);
         return true;
     }
 
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return render_task.stopJob(params);
+        RenderTask task = render_tasks.get(params.getJobId());
+        if (task == null) {
+            MainActivity.get_error_manager().error(new Exception("Trying to stop unstarted job " + params.getJobId()));
+            return false;
+        }
+
+        render_tasks.set(params.getJobId(), null);
+
+        MainActivity.get_error_manager().error(new Exception("Stopping job " + params.getJobId() + "..."));
+        return task.stopJob(params);
+    }
+
+    public void call_finish(JobParameters params, boolean needsReschedule) {
+        MainActivity.get_error_manager().error(new Exception("Finishing job " + params.getJobId() + " with needsReschedule=" + needsReschedule));
+        jobFinished(params, needsReschedule);
     }
 }
