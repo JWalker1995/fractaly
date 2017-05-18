@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -14,6 +15,7 @@ import java.util.GregorianCalendar;
  */
 
 public class UpdateServiceScheduler extends BroadcastReceiver {
+    private static final String TAG = "UpdateServiceScheduler";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,15 +32,16 @@ public class UpdateServiceScheduler extends BroadcastReceiver {
     public static void schedule(Context context) {
         UpdateService.prepare_renders(context);
 
-        Calendar date = new GregorianCalendar();
-        date.set(Calendar.HOUR_OF_DAY, 0);
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(System.currentTimeMillis());
+        date.set(Calendar.HOUR_OF_DAY, 24);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
-        date.add(Calendar.DAY_OF_MONTH, 1);
+        Log.d(TAG, "Update scheduled for " + date.getTimeInMillis());
 
         AlarmManager alarm_manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarm_manager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        alarm_manager.setInexactRepeating(AlarmManager.RTC,
                 date.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY,
                 make_updateservice_intent(context));

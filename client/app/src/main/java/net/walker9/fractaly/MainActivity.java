@@ -19,29 +19,16 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    static PersistentData persistent_data;
-    static ErrorManager error_manager;
-
-    public static PersistentData get_persistent_data() {
-        return persistent_data;
-    }
-    public static ErrorManager get_error_manager() { return error_manager; }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        persistent_data = new PersistentData(this);
-
-        final TextView log_textview = (TextView) findViewById(R.id.log);
-        error_manager = new ErrorManager(log_textview);
-
         CheckBox enable_checkbox = (CheckBox) findViewById(R.id.enable);
         enable_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                persistent_data.set_enabled(value);
+                new PersistentData(MainActivity.this).set_enabled(value);
             }
         });
 
@@ -49,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         enable_fractal_galaxy_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                persistent_data.set_fractal_galaxy_enabled(value);
+                new PersistentData(MainActivity.this).set_fractal_galaxy_enabled(value);
             }
         });
 
@@ -64,13 +51,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         update_now_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 UpdateService.update(MainActivity.this);
-            }
-        });
-
-        Button clear_log_button = (Button) findViewById(R.id.clear_log);
-        clear_log_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                log_textview.setText("");
             }
         });
 
@@ -100,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
     private void open_image_selector() {
-        ArrayList<String> active_list = MainActivity.get_persistent_data().get_active_images();
+        ArrayList<String> active_list = new PersistentData(MainActivity.this).get_active_images();
 
         MultiImageSelector.create()
                 .showCamera(true)
@@ -115,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (requestCode == PICK_IMAGES_REQUEST) {
             if (resultCode == RESULT_OK) {
                 ArrayList<String> active_list = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                MainActivity.get_persistent_data().set_active_images(active_list);
+                new PersistentData(MainActivity.this).set_active_images(active_list);
             }
         }
     }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
  */
 
 public class RenderService extends JobService {
+    private static final String TAG = "RenderService";
 
     static void request(Context context, int id) {
         if (id < render_tasks.size() && render_tasks.get(id) != null) {
@@ -32,14 +33,10 @@ public class RenderService extends JobService {
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         int result = scheduler.schedule(jobInfo);
         if (result == JobScheduler.RESULT_SUCCESS) {
-            MainActivity.get_error_manager().error(new Exception("Scheduled job " + id));
+            Log.d(TAG, "Scheduled job " + id);
         } else {
-            MainActivity.get_error_manager().error(new Exception("Failed to schedule job " + id));
+            Log.e(TAG, "Failed to schedule job " + id);
         }
-    }
-
-    RenderService() {
-        MainActivity.get_error_manager().error(new Exception("RenderService"));
     }
 
     private static ArrayList<RenderTask> render_tasks = new ArrayList<RenderTask>();
@@ -50,11 +47,11 @@ public class RenderService extends JobService {
             render_tasks.add(null);
         }
         if (render_tasks.get(params.getJobId()) != null) {
-            MainActivity.get_error_manager().error(new Exception("Trying to restart job " + params.getJobId()));
+            Log.e(TAG, "Trying to restart job " + params.getJobId());
             return false;
         }
 
-        MainActivity.get_error_manager().error(new Exception("Starting job " + params.getJobId() + "..."));
+        Log.d(TAG, "Starting job " + params.getJobId() + "...");
 
         RenderTask task = new RenderTask(this);
         render_tasks.set(params.getJobId(), task);
@@ -68,18 +65,18 @@ public class RenderService extends JobService {
     public boolean onStopJob(JobParameters params) {
         RenderTask task = render_tasks.get(params.getJobId());
         if (task == null) {
-            MainActivity.get_error_manager().error(new Exception("Trying to stop unstarted job " + params.getJobId()));
+            Log.e(TAG, "Trying to stop unstarted job " + params.getJobId());
             return false;
         }
 
         render_tasks.set(params.getJobId(), null);
 
-        MainActivity.get_error_manager().error(new Exception("Stopping job " + params.getJobId() + "..."));
+        Log.d(TAG, "Stopping job " + params.getJobId() + "...");
         return task.stopJob(params);
     }
 
     public void call_finish(JobParameters params, boolean needsReschedule) {
-        MainActivity.get_error_manager().error(new Exception("Finishing job " + params.getJobId() + " with needsReschedule=" + needsReschedule));
+        Log.d(TAG, "Finishing job " + params.getJobId() + " with needsReschedule=" + needsReschedule);
         jobFinished(params, needsReschedule);
     }
 }

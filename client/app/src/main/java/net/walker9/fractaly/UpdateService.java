@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,13 +18,17 @@ import java.util.Random;
  * Created by joel on 2/27/17.
  */
 public class UpdateService extends IntentService {
+    private static final String TAG = "UpdateService";
+
     public UpdateService() {
         super("UpdateService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (MainActivity.get_persistent_data().get_enabled()) {
+        Log.d(TAG, "onHandleIntent");
+
+        if (new PersistentData(this).get_enabled()) {
             update(this);
         }
     }
@@ -39,28 +44,28 @@ public class UpdateService extends IntentService {
     }
 
     private static boolean use_render(Context context) {
-        if (!MainActivity.get_persistent_data().get_fractal_galaxy_enabled()) {
+        if (!new PersistentData(context).get_fractal_galaxy_enabled()) {
             return false;
         }
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             File file = new File(context.getFilesDir(), "render_" + i + ".png");
-            MainActivity.get_error_manager().error(new Exception(file.getName() + " exists=" + file.exists()));
+            Log.d(TAG, file.getName() + " exists=" + file.exists());
 
             if (file.exists()) {
                 InputStream input_stream = null;
                 try {
                     input_stream = new FileInputStream(file);
                 } catch (FileNotFoundException e) {
-                    MainActivity.get_error_manager().error(e);
+                    e.printStackTrace();
                     return false;
                 }
 
-                MainActivity.get_error_manager().error(new Exception("Setting wallpaper to " + file.getAbsolutePath() + "..."));
+                Log.d(TAG, "Setting wallpaper to " + file.getAbsolutePath() + "...");
                 set_wallpaper(context, input_stream);
 
                 if (!file.delete()) {
-                    MainActivity.get_error_manager().error(new Exception("Could not delete file " + file.getAbsolutePath() + "..."));
+                    Log.e(TAG, "Could not delete file " + file.getAbsolutePath());
                 }
                 RenderService.request(context, i);
                 return true;
@@ -69,14 +74,14 @@ public class UpdateService extends IntentService {
             }
         }
 
-        MainActivity.get_error_manager().error(new Exception("Not using render because there aren't any"));
+        Log.i(TAG, "Not using render because there aren't any");
         return false;
     }
 
     private static boolean use_image(Context context) {
-        ArrayList<String> active_images = MainActivity.get_persistent_data().get_active_images();
+        ArrayList<String> active_images = new PersistentData(context).get_active_images();
         if (active_images.isEmpty()) {
-            MainActivity.get_error_manager().error(new Exception("Not using image because there aren't any"));
+            Log.i(TAG, "Not using image because there aren't any");
             return false;
         }
 
@@ -88,11 +93,11 @@ public class UpdateService extends IntentService {
         try {
             input_stream = new FileInputStream(path);
         } catch (FileNotFoundException e) {
-            MainActivity.get_error_manager().error(e);
+            e.printStackTrace();
             return false;
         }
 
-        MainActivity.get_error_manager().error(new Exception("Setting wallpaper to " + path + "..."));
+        Log.d(TAG, "Setting wallpaper to " + path + "...");
         set_wallpaper(context, input_stream);
 
         return true;
@@ -103,16 +108,14 @@ public class UpdateService extends IntentService {
         try {
             myWallpaperManager.setStream(input_stream);
         } catch (IOException e) {
-            MainActivity.get_error_manager().error(e);
+            e.printStackTrace();
         }
     }
 
     public static void prepare_renders(Context context) {
-        MainActivity.get_error_manager().error(new Exception("Preparing..."));
-
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 8; i++) {
             File file = new File(context.getFilesDir(), "render_" + i + ".png");
-            MainActivity.get_error_manager().error(new Exception(file.getName() + " exists=" + file.exists()));
+            Log.d(TAG, file.getName() + " exists=" + file.exists());
 
             if (!file.exists()) {
                 RenderService.request(context, i);

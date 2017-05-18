@@ -40,13 +40,8 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
         service.call_finish(params, false);
     }
 
-    @Override
-    protected void onCancelled(JobParameters params) {
-        service.call_finish(params, true);
-    }
-
     public boolean stopJob(JobParameters params) {
-        return !cancel(true);
+        return cancel(true);
     }
 
 
@@ -63,7 +58,7 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
         try {
             out = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
-            MainActivity.get_error_manager().error(e);
+            e.printStackTrace();
             return;
         }
         bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -71,7 +66,7 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
         try {
             out.close();
         } catch (IOException e) {
-            MainActivity.get_error_manager().error(e);
+            e.printStackTrace();
         }
     }
 

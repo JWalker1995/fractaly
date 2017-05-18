@@ -23,18 +23,16 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:configChanges="orientation|screenSize"
-            android:name=".ImageSelector" />
-
         <receiver android:name=".UpdateServiceScheduler">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".UpdateService"
-            android:description="@string/poll_service_desc"
+        <receiver  android:process=":remote" android:name=".UpdateService"></receiver>
+
+        <service
+            android:name=".UpdateService"
             android:exported="false" />
 
         <service
