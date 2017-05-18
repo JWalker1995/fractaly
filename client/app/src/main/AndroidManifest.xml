@@ -31,13 +31,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".RenderThreadRunner">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
-
         <service android:name=".UpdateService"
             android:description="@string/poll_service_desc"
             android:exported="false" />

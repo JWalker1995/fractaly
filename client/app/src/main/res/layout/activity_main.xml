@@ -10,8 +10,49 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.walker9.fractaly.MainActivity">
 
+    <CheckBox
+        android:id="@+id/enable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:checked="true"
+        android:text="Enable" />
+
+    <CheckBox
+        android:id="@+id/enable_fractal_galaxy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/enable"
+        android:layout_weight="1"
+        android:checked="true"
+        android:text="Enable Fractal Galaxy" />
+
+    <Button
+        android:id="@+id/select_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Select Images"
+        android:layout_below="@+id/enable_fractal_galaxy"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/update_now"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/select_images"
+        android:layout_weight="1"
+        android:text="Update Now" />
+
     <TextView
+        android:id="@+id/log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/update_now"
+        android:text="Log" />
 </RelativeLayout>

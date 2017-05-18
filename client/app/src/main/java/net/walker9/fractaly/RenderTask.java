@@ -57,7 +57,7 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
         try {
             out = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            MainActivity.get_error_manager().error(e);
             return;
         }
 
@@ -72,7 +72,7 @@ public class RenderTask extends AsyncTask<JobParameters, Void, JobParameters> {
         try {
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            MainActivity.get_error_manager().error(e);
         }
     }
 

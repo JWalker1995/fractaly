@@ -20,6 +20,24 @@ public class PersistentData {
         prefs = context.getSharedPreferences(PREFS_NAME, 0);
     }
 
+    public boolean get_enabled() {
+        return prefs.getBoolean("enabled", true);
+    }
+    public void set_enabled(boolean value) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("enabled", value);
+        editor.commit();
+    }
+
+    public boolean get_fractal_galaxy_enabled() {
+        return prefs.getBoolean("fractal_galaxy_enabled", true);
+    }
+    public void set_fractal_galaxy_enabled(boolean value) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("fractal_galaxy_enabled", value);
+        editor.commit();
+    }
+
     public ArrayList<String> get_active_images() {
         Set<String> set = prefs.getStringSet("active_images", null);
         if (set == null) {

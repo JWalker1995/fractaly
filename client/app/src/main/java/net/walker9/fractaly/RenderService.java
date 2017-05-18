@@ -27,7 +27,7 @@ public class RenderService extends JobService {
         JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         int result = scheduler.schedule(jobInfo);
         if (result != JobScheduler.RESULT_SUCCESS) {
-            Log.d("JOB_FAIL", "Job failed to schedule");
+            MainActivity.get_error_manager().error(new Exception("Job failed to schedule"));
         }
     }
 
